@@ -153,6 +153,7 @@ text-decoration: underline;
 
 .footer-pop li {
 	background: rgba(0, 0, 0, 0.85);
+	opacity: 0;
 }
 
 .footer-pop p {

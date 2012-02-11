@@ -140,10 +140,20 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 			accountID = $('#tableId').val();
 		});
 		
-		$('#clickedclick').click(function(){
-			$('#git-pop').show();			
-		});
-			
+		$('.footer > div > ul > li').hover(
+			function(){
+				var footerUl = $(this).index();
+				//var footerli = index(footerUl);
+				console.log(footerUl);
+				$('#foot-pop-li > li').eq(footerUl).stop().animate({opacity: 0.9}, 500);			
+			},
+			function(){
+				var footerUl = $(this).index();
+				//var footerli = index(footerUl);
+				console.log(footerUl);
+				$('#foot-pop-li > li').eq(footerUl).stop().animate({opacity: 0}, 500);			
+			}		
+		);			
 	});	
 	
 	
@@ -244,7 +254,6 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 		}
 
 		// Function to return column type
-
 		function columnType(tmpType, columnId) {
 		//var columnTypeTime = [];
 		//var columnTypePercent = new Array();
@@ -286,23 +295,6 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 			
 		}
 
-/*		function decimalTime(decimal) {
-			minutes = Math.floor(decimal / 60);
-			minutes = minutes.toString();
-			minutes = '0' + minutes;
-			minutes = minutes.slice(-2);
-				console.log(minutes);	
-			seconds = Math.round(decimal % 60);
-			seconds = seconds.toString();
-			seconds = '0' + seconds;
-			seconds = seconds.slice(-2);
-				console.log(seconds);	
-			tmpTime = ['00', minutes, seconds];
-			time = tmpTime.join(':');
-			return (time);		
-		}
-		
-*/
 	function decimalTime(secs)
 	{
 	    var hours = Math.floor(secs / (60 * 60));
@@ -317,11 +309,9 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 		console.log(obj);
 		//var time = obj.join(":");
 		for (var i = 0; i < obj.length; i++){
-			if (obj[i] = 0 ) {
-				obj[i] = "0" + toString(obj[i]);
-			} else {
-				obj[i] = obj[i];
-			}
+			if (obj[i] < 10 ) {
+				obj[i] = String("0" + obj[i]);
+			} 
 		}
 		obj = obj.join(":");
 		console.log(obj);
@@ -372,116 +362,11 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 				formatter.format(data, columnTypePercent[i]); // Apply formatter to fifth column
 			}
 		}
-/*		if (columnTypeTime.length > 0) {
-			var formatterDecimal = new google.visualization.NumberFormat(
-			{fractionDigits: 2});
-			formatterDecimal.format(data, columnTypeTime[0]);
-		}*/
-		
-		//var title = "/";
-		//$('.google-visualization-table-td:contains(' + title +')').css('width', '180px'); 
 
-	
 		$('#controls').find('a').removeClass();
 		$('#table-button').addClass('table-button-active');
 		table.draw(data, {showRowNumber: true, width: 575, height: 460, sort: 'disable'}); //Output Table
 	}	
+	
 		
 		
-		
-/*		
-		
-		var columnHeaders = response.foo.concat(response.bar)
-		
-		// Fetch Metric Columns
-		var metricColumn = columnHeaders(dataFeedQuery.metrics);
-		console.log(metricColumn);
-		// Fetch Dimension Columns	
-		var dimensionColumn = columnHeaders(dataFeedQuery.dimensions);
-		console.log(dimensionColumn);
-			// Concatentate Column Headers Together
-		var	columnHeadersJoin = dimensionColumn.concat(metricColumn);		
-		
-		function columnHeaders(columns) {
-			var columns = columns.slice(3);
-			columns = columns.split(',ga:');
-			return(columns);
-		}
-		
-		
-		var columnHeadersArray = columnHeadersJoin;
-		//console.log(columnHeadersArray);	
-		var columnHeadersLength = columnHeadersArray.length;
-		
-		
-		// Get First Row of Results
-		var testEntries = entries[0];
-		var columnTypes = [];
-		
-		// Test Each Cell in First Row for Data type 
-		for(i = 0; i < columnHeadersLength; i++) {
-			var testData = testEntries.getValueOf('ga:' + columnHeadersArray[i]);
-			if (columnHeadersArray[i] === "avgTimeOnSite" || columnHeadersArray[i] === "avgTimeOnPage") {
-				columnTypes[i] = 'string';	
-			}	
-			else if (isNaN(testData)) {
-				columnTypes[i] = 'string';
-			} else {
-				columnTypes[i] = 'number';	
-			}
-			
-		}
-		
-
-		//Print Table Headers
-		for (var i = 0; i < columnHeadersLength; i++){
-			var tmpColumn = columnHeadersArray[i];
-			var tmpType = columnTypes[i];
-			dataFeedTable.addColumn(tmpType, tmpColumn); 
-		}
-		
-		
-		// Convert Decimal to hh:mm:ss
-
-		
-		
-
-		
-		// Iterate through the feed entries and add the data as table rows.
-		var rowArray  = new Array(); 
-		for (var i = 0, entry; entry = entries[i]; ++i) {
-		
-			for (var ii = 0; ii < columnHeadersLength; ii++){
-				var tmpMetric = columnHeadersArray[ii];
-				tmpData = entry.getValueOf('ga:' + tmpMetric);
-					if(tmpMetric === "avgTimeOnSite" || tmpMetric === "avgTimeOnPage"){
-						tmpData = decimalTime(tmpData);
-					}
-					if (tmpMetric === "visitBounceRate" || tmpMetric === "percentNewVisits"){
-						tmpData = Math.round(tmpData);
-					}
-				rowArray[ii] = tmpData;					
-			}
-
-			dataFeedTable.addRows([rowArray]);
-			
-		}
-		
-		createTable(dataFeedTable);
-	}
-		
-	function createTable(dataFeedTable)	 {
-		$('.visualisation-output').hide();
-		$('#table_div').fadeIn(300);
-		var table = new google.visualization.Table(document.getElementById('table_div'));
-
-		table.draw(dataFeedTable, {showRowNumber: true, width: 575, height: 460, sort: 'disable'}); //Output Table
-		var title = "/";
-		$('.google-visualization-table-td:contains(' + title +')').css('width', '180px'); 
-		$('#controls').find('a').removeClass();
-		$('#table-button').addClass('table-button-active');
-	}	
-
-*/
-
-
