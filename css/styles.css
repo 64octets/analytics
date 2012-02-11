@@ -110,7 +110,7 @@ padding: 10px 0px;
 	padding-top: 12px;
 }
 
-#footer{
+.footer{
 position: fixed;
 bottom: 0px;
 width: 100%;
@@ -118,29 +118,49 @@ background: rgba(0, 0, 0, 0.85);
 box-shadow: rgba(0,0,0,0.6) 10px -10px 25px;
 }
 
-#footer-inner {
+.footer-inner {
 width: 1000px;
-padding: 10px 0px;
 margin: 0 auto;
 }
 
-#footer-inner ul {
+.footer-inner ul {
 
 }
 
-#footer-inner li {
+.footer-inner li {
 display: inline-block;
-padding: 0px 60px;
+width: 196px;
+text-align: center;
+padding: 10px 0px;
 }
 
-#footer-inner a {
+.footer-inner a {
 color: white;
 font-size: 11px;
 text-decoration: none;
 }
 
-#footer-inner a:hover {
+.footer-inner a:hover {
 text-decoration: underline;
+}
+
+.footer-pop {
+	position: fixed;
+	bottom: 36px;
+	width: 100%;
+}
+
+
+.footer-pop li {
+	background: rgba(0, 0, 0, 0.85);
+}
+
+.footer-pop p {
+	color: white;
+	line-height: 20px;
+	padding: 10px;
+	font-size: 0.7em;
+	text-align: left;
 }
 
 

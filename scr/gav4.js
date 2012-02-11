@@ -139,6 +139,10 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 		$('#confirm-acc-id').click(function() {
 			accountID = $('#tableId').val();
 		});
+		
+		$('#clickedclick').click(function(){
+			$('#git-pop').show();			
+		});
 			
 	});	
 	
@@ -204,7 +208,7 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 			}
 		});
 		restRequest.execute(function(response) {
-			//console.log(response); 
+			console.log(response); 
 			handleDataFeed(response); 
 		});
 	}	  
@@ -266,7 +270,7 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 			else if (tmpType === "PERCENT"){
 				if (typeof columnTypePercent === 'undefined'){
 					//console.log(columnTypePercent);
-					columnTypePercent[0] = columnId;
+					columnTypePercent.push(columnId);
 				} else {
 					//console.log(columnTypePercent);
 					columnTypePercent.push(columnId);
@@ -277,6 +281,7 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 				alert('data type not recognised' + tmpType);
 			}
 			console.log(columnTypeTime);
+			console.log(columnTypePercent);
 			return(tmpType);
 			
 		}
@@ -361,9 +366,11 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 		var table = new google.visualization.Table(document.getElementById('table_div'));
 			
 		if (columnTypePercent.length > 0) {	
-			var formatter = new google.visualization.NumberFormat(
-			{fractionDigits: 2, suffix: "%"});
-			formatter.format(data, 5); // Apply formatter to fifth column
+			for(var i=0; i < columnTypePercent.length; i++) {
+				var formatter = new google.visualization.NumberFormat(
+				{fractionDigits: 2, suffix: "%"});
+				formatter.format(data, columnTypePercent[i]); // Apply formatter to fifth column
+			}
 		}
 /*		if (columnTypeTime.length > 0) {
 			var formatterDecimal = new google.visualization.NumberFormat(
