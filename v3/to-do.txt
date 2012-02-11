@@ -1,0 +1,67 @@
+|- Start up logic
+|	- intro screen with table selection
+|	- when loaded table, prompt to select report
+|		- when selected default to most viewed
+|
+
+	
+- Reports selected
+	- delete inner content
+	- if data table hasnt been created
+		- request feed
+		- output table
+		- add table active class
+	- else data table exists
+		- output table
+		- add table active class
+		
+	- Select Method
+		- table
+			- show No. results
+			- hide select metric select	
+			- check report
+			- output table
+		- bar
+			- hide No. results
+			- show select metric select	
+			- check report
+			- output bar
+		- line
+			- hide No. results
+			- show select metric select			
+			- check report
+			- if data exists
+				- output line graph
+			- else request line feed
+				- output line graph
+		
+	
+	
+	- Form Flow on Submit
+		- Change date in h3 on submit of form
+		- if table 
+			- push dates + no. results to main feed request
+			- output table
+		- if bar 
+			- push dates + no. results to main method request
+			- output bar
+		- if line 
+			- push dates + no. results to over time method request
+			- output line
+			
+======================== UI ============================
+			
+- default loading state
+	- custom spinner
+	- fade out content
+	- disable input in inner-content
+	
+- sampled data alert show
+	- show below title
+	
+- extend graph
+	- fold in controls
+		- show pop back 
+	- extend inner content
+	- send new size to visualisation method
+		- ouput new visualisation
