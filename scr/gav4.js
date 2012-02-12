@@ -119,18 +119,7 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 			if(currentMethod === "line-graph-button") {console.log(currentMethod);}	
 		});
 		
-		// Turn Loading State on
-		function loadingStateOn() {
-			$('#faux-wrap').animate({opacity: '0.3'},{duration: 500});
-			$('#loading-state').fadeIn(300);
-		}
-		
-		// Turn loading state off
-		function loadingStateOff() {
-			$('#loading-state').fadeOut(300);
-			$('#faux-wrap').animate({opacity: '1'},{duration: 500});
-		}
-		
+	
 		// Add Data Picker
 		$(function() {
 			$( "#from-date, #to-date" ).datepicker({dateFormat: 'yy-mm-dd' });
@@ -156,6 +145,16 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 			}		
 		);			
 	});	
+	
+	// Turn Loading State on
+	function loadingStateOn() {
+		$('#loading-state-block').fadeIn(300);
+	}
+	
+	// Turn loading state off
+	function loadingStateOff() {
+		$('#loading-state-block').fadeOut(300);
+	}
 	
 	
 /**======================
@@ -204,7 +203,8 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 	
 	
 	// Load the API and make an API call.  Display the results on the screen.
-	function getDataFeed(data) {	  
+	function getDataFeed(data) {
+		loadingStateOn();	  
 		var restRequest = gapi.client.request({
 			'path': '/analytics/v3/data/ga',
 			'params': {
@@ -296,7 +296,7 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 			return(tmpType);
 			
 		}
-
+	//Format decimal time (28.0909678) into hh:mm:ss
 	function decimalTime(secs)
 	{
 	    var hours = Math.floor(secs / (60 * 60));
@@ -309,7 +309,7 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 	   
 		var obj = [hours, minutes, seconds]
 		console.log(obj);
-		//var time = obj.join(":");
+		//pad to format of hh:mm:ss
 		for (var i = 0; i < obj.length; i++){
 			if (obj[i] < 10 ) {
 				obj[i] = String("0" + obj[i]);
@@ -356,7 +356,8 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 		$('.visualisation-output').hide();
 		$('#table_div').fadeIn(300);
 		var table = new google.visualization.Table(document.getElementById('table_div'));
-			
+		
+		// Format percentage columns	
 		if (columnTypePercent.length > 0) {	
 			for(var i=0; i < columnTypePercent.length; i++) {
 				var formatter = new google.visualization.NumberFormat(
@@ -364,22 +365,37 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 				formatter.format(data, columnTypePercent[i]); // Apply formatter to fifth column
 			}
 		}
-
-		$('#controls').find('a').removeClass();
-		$('#table-button').addClass('table-button-active');
+	
+		// define css classes for tables
+		var tableClassNames = {
+				tableCell: 'table-size', 
+				oddTableRow: 'odd-table-row', 
+				hoverTableRow: 'hover-table-row',
+				selectedTableRow: 'selected-table-row',
+				headerRow: 'header-table-row'
+			 };
+		
 		table.draw(data, {
 			showRowNumber: true,
 			width: 575, 
 			//sort: 'disable',
 			page: 'enable',
-			pageSize: "10"
+			pageSize: "10",
+			cssClassNames: tableClassNames
 			}
 		); //Output Table
 		
+		//set method button
+		$('#controls').find('a').removeClass();
+		$('#table-button').addClass('table-button-active');
+		//add paging buttons
+		$('.table-pager').fadeIn(300);
 		firstColumnFix();
+		loadingStateOff();
 	}	
 	
+	//Shrink Page path text size
 	function firstColumnFix(){
-		$('tr > .google-visualization-table-td:nth-child(2)').addClass("width-cell");		//.css("font-size", "10" );
+		$('tr > .table-size:nth-child(2)').addClass("width-cell");		//.css("font-size", "10" );
 	}	
 		

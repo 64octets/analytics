@@ -65,12 +65,14 @@ border-radius: 3px;
 #wrap-inner{width:960px; margin-left:20px; margin-right:20px; padding-top: 3px;}
 
 #header{
-background: #404648;
+position: relative;
+z-index: 1000;
+margin-bottom: 41px;
 border-bottom: 2px solid #111;
 box-shadow: rgba(0,0,0,0.6) 1px 3px 25px;
-z-index: 10000;
+background: #404648;
 background: url(container-bg.png) repeat;
-margin-bottom: 41px;
+
 }
 
 #header-inner {
@@ -116,6 +118,7 @@ bottom: 0px;
 width: 100%;
 background: rgba(0, 0, 0, 0.85);
 box-shadow: rgba(0,0,0,0.6) 10px -10px 25px;
+z-index: 1000;
 }
 
 .footer-inner {
@@ -148,6 +151,7 @@ text-decoration: underline;
 	position: fixed;
 	bottom: 36px;
 	width: 100%;
+	z-index: 1000;
 }
 
 
@@ -333,6 +337,49 @@ color: #888;
 font-size: 15px;
 }
 
+#loading-state-block div{
+width: 150px;
+background: #EEE;
+border-radius: 5px;
+border: 10px solid rgba(0, 0, 0, 0.4);
+position: relative;
+padding: 20px;
+box-shadow: 0px 0px 9px 7px rgba(0,0,0,0.2);
+margin: 0 auto;
+top: 45%;
+}
+
+#loading-state-block span {
+background: url(ajax-loader.gif) 100px 0px no-repeat;
+position: relative;
+display: block;
+width: 100%;
+padding-left: 20px;
+color: #525150;
+}
+
+#loading-state-block {
+display: none;
+position: absolute;
+left: 0;
+top: 0;
+height: 100%;
+width: 100%;
+background: rgba(0, 0, 0, 0.8);
+z-index: 10;
+}
+
+#table_div div {overflow-x: visible;}
+.width-cell{font-size: 0.75em!important; word-wrap: break-word;}
+.table-size{font-size: 12px;}
+.odd-table-row{background-color: #F5F5F5;}
+.hover-table-row{background-color: #ABD3F5;}
+.selected-table-row{background-color: #67B3F5;}
+.header-table-row{background-color: #46A2F2; color: white; font-weight: 700; word-wrap: break-word;}
+
+
+/*
+ 
 #inner-content td {
 padding: 5px;
 color: #464646;
@@ -345,28 +392,4 @@ color: #464646;
 	border: 1px solid white;
 }
 
-#table_div div {overflow: hidden!important;}
-
-#loading-state {
-display: none;
-width: 150px;
-background: #EFE16F;
-border-radius: 5px;
-border: 1px solid #C81515;
-position: absolute;
-left: 45%;
-padding: 20px;
-box-shadow: 1px 1px 5px 4px rgba(0,0,0,0.2);
-top: 180px;
-}
-
-#loading-state span {
-background: url(ajax-loader.gif) 100px 0px no-repeat;
-position: relative;
-display: block;
-width: 100%;
-padding-left: 20px;
-color: #C81515;
-}
-
-.width-cell{font-size: 0.75em!important;}
+*/

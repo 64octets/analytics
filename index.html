@@ -69,6 +69,10 @@
 						<div class="visualisation-output" id="table_div" style="display:none"></div>
 						<div class="visualisation-output" id="pie_div" style="display:none"></div>
 						<div class="visualisation-output" id="line_div" style="display:none"></div>
+						<div class="table-pager" style="display: none">
+								<button id="tab-prev">Prev</button>
+								<button id="tab-next">Next</button>
+						</div>
 						
 
 					</div>
@@ -111,7 +115,7 @@
 					
 				</div>
 				
-					<div id="loading-state"><span>Loading...</span></div>
+					
 				
 				</div>
 			
@@ -166,7 +170,9 @@
 		</div>
 	</div>	
 	
-	
+	<div id="loading-state-block">
+		<div><span>Loading...</span></div>
+	</div>
 </body>
 
 <script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
