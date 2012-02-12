@@ -24,28 +24,32 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 		"dimensions": "ga:pagePath",
 		"metrics": "ga:pageviews,ga:uniquePageviews,ga:avgTimeOnPage,ga:bounces,ga:visitBounceRate",
 		"sort": "-ga:pageviews",
-		"maxResults": "10"	
+		"maxResults": "10",
+		"startIndex": "1" 	
 	};
 	
 	// Most Viewed Report Query
 	var mostViewedQuery = {
 		"dimensions": "ga:pagePath",
 		"metrics": "ga:pageviews,ga:uniquePageviews,ga:avgTimeOnPage,ga:bounces,ga:visitBounceRate",
-		"sort": "-ga:pageviews"	
+		"sort": "-ga:pageviews",
+		"startIndex": "1"	
 	};
 	
 	// Traffic Source Query
 	var trafficSourceQuery = {
 		"dimensions": "ga:source",
 		"metrics": "ga:visitors,ga:percentNewVisits,ga:avgTimeOnSite,ga:bounces,ga:visitBounceRate",
-		"sort": "-ga:visitors"	
+		"sort": "-ga:visitors",
+		"startIndex": "1"	
 	};
 	
 	// Organic Search Terms
 	var searchTermQuery = {
 		"dimensions": "ga:keyword",
 		"metrics": "ga:visitors,ga:percentNewVisits,ga:avgTimeOnSite,ga:bounces,ga:visitBounceRate",
-		"sort": "-ga:visitors"	
+		"sort": "-ga:visitors",
+		"startIndex": "1"	
 	};
 	
 
@@ -211,7 +215,8 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 			'metrics': dataFeedQuery.metrics,
 			'dimensions': dataFeedQuery.dimensions,
 			'sort': dataFeedQuery.sort,
-			'max-results': dataFeedQuery.maxResults 	
+			'max-results': dataFeedQuery.maxResults,
+			'start-index': dataFeedQuery.startIndex 	
 			}
 		});
 		restRequest.execute(function(response) {
