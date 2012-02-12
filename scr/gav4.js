@@ -101,13 +101,10 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 		
 		// Form Submission Event
 		$('#submit-form').click(function() {
-			console.log('success');
-			var fromDate = $('#from-date').val();
-			var toDate = $('#to-date').val();
-			var numberResults = $('#number-results').val();
-			console.log(toDate);
-			console.log(fromDate);
-			console.log(numberResults);
+			dataFeedQuery.startDate = $('#from-date').val();
+			dataFeedQuery.endDate = $('#to-date').val();
+			dataFeedQuery.maxResults = $('#number-results').val();
+			getDataFeed(dataFeedQuery);
 		}); 
 		
 		// Method Selection Event
@@ -365,8 +362,19 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 
 		$('#controls').find('a').removeClass();
 		$('#table-button').addClass('table-button-active');
-		table.draw(data, {showRowNumber: true, width: 575, height: 460, sort: 'disable'}); //Output Table
+		table.draw(data, {
+			showRowNumber: true,
+			width: 575, 
+			//sort: 'disable',
+			page: 'enable',
+			pageSize: "10"
+			}
+		); //Output Table
+		
+		firstColumnFix();
 	}	
 	
-		
+	function firstColumnFix(){
+		$('tr > .google-visualization-table-td:nth-child(2)').addClass("width-cell");		//.css("font-size", "10" );
+	}	
 		
