@@ -19,6 +19,7 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 	
 	// Analytics Feed Query with default values
 	var dataFeedQuery = {
+		"title": "Most Viewed",
 		"startDate": "2009-04-01",
 		"endDate": "2009-04-05",
 		"dimensions": "ga:pagePath",
@@ -30,6 +31,7 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 	
 	// Most Viewed Report Query
 	var mostViewedQuery = {
+		"title": "Most Viewed",
 		"dimensions": "ga:pagePath",
 		"metrics": "ga:pageviews,ga:uniquePageviews,ga:avgTimeOnPage,ga:bounces,ga:visitBounceRate",
 		"sort": "-ga:pageviews",
@@ -38,6 +40,7 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 	
 	// Traffic Source Query
 	var trafficSourceQuery = {
+		"title": "Traffic Sources",
 		"dimensions": "ga:source",
 		"metrics": "ga:visitors,ga:percentNewVisits,ga:avgTimeOnSite,ga:bounces,ga:visitBounceRate",
 		"sort": "-ga:visitors",
@@ -46,6 +49,7 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 	
 	// Organic Search Terms
 	var searchTermQuery = {
+		"title": "Search Terms",
 		"dimensions": "ga:keyword",
 		"metrics": "ga:visitors,ga:percentNewVisits,ga:avgTimeOnSite,ga:bounces,ga:visitBounceRate",
 		"sort": "-ga:visitors",
@@ -154,6 +158,15 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 	// Turn loading state off
 	function loadingStateOff() {
 		$('#loading-state-block').fadeOut(300);
+	}
+	
+	//Update Title with report and date
+	function titleUpdate() {
+		var start = new Date(dataFeedQuery.startDate);
+		var end = new Date(dataFeedQuery.endDate);
+		start = $.datepicker.formatDate('dd-mm-y', start);
+		end = $.datepicker.formatDate('dd-mm-y', end);
+		$('#inner-content > h3').html(dataFeedQuery.title + ": " + start + " to " + end);
 	}
 	
 	
@@ -391,6 +404,7 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 		//add paging buttons
 		$('.table-pager').fadeIn(300);
 		firstColumnFix();
+		titleUpdate();
 		loadingStateOff();
 	}	
 	
