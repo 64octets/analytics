@@ -1,6 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-
 <head>
 	<title>Wordpress Analytics Dashboard</title>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
@@ -9,12 +8,12 @@
 	<link type="text/css" href="css/flick/jquery-ui-1.8.17.custom.css" rel="stylesheet" />	
 	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600' rel='stylesheet' type='text/css'/>
 		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-		<!--script type="text/javascript" src="http://www.google.com/jsapi"></script-->
+		<!-- script type="text/javascript" src="http://www.google.com/jsapi"></script -->
 		<script type="text/javascript" src="scr/jquery-1.7.1.min.js"></script>
 		<script type="text/javascript" src="scr/jquery-ui-1.8.17.custom.min.js"></script>
-		<!--script type="text/javascript" src="scr/datavisual.js"></-->
-		<!--script type="text/javascript" src="data-vis-control.js"></script>
-		<!--script type="text/javascript" src="scr/scripts.js"></script-->
+		<!-- script type="text/javascript" src="scr/datavisual.js"></script -->
+		<!-- script type="text/javascript" src="data-vis-control.js"></script -->
+		<!-- script type="text/javascript" src="scr/scripts.js"></script -->
 		<script type="text/javascript" src="scr/gav4.js"></script>
 		
 	
@@ -29,10 +28,7 @@
 	
 	<div id="wrap">
 		<div id="wrap-inner">
-		
-			
-
-			
+	
 				<div id="nav">
 					<ul>
 						<li id="nav-most-viewed">Most Viewed</li>
@@ -52,7 +48,7 @@
 					</div-->
 				<div id="faux-wrap">
 					<div id="inner-content">
-						<h3>Most Viewed Content: from 21/10/11 to 22/10/11</h3>
+						<h3>Most Viewed: 21/10/11 to 22/10/11</h3>
 						<div class="visualisation-output" id="dataControls" style="display:none">
 						  <p>Select the Profile you want to use.</p>
 					
@@ -70,8 +66,18 @@
 						<div class="visualisation-output" id="pie_div" style="display:none"></div>
 						<div class="visualisation-output" id="line_div" style="display:none"></div>
 						<div class="table-pager" style="display: none">
-								<button id="tab-prev">Prev</button>
-								<button id="tab-next">Next</button>
+							<span id="table-sort">
+							Sort by: 	
+							<select name="cars">
+								<option value="volvo">Volvo</option>
+								<option value="saab">Saab</option>
+								<option value="fiat">Fiat</option>
+								<option value="audi">Audi</option>
+							</select>
+							</span>
+							<span>1 - 10 results</span>
+							<button id="tab-prev">Prev</button>
+							<button id="tab-next">Next</button>
 						</div>
 						
 
@@ -80,54 +86,46 @@
 					<div id="controls">
 						<span>Graph by:</span>
 						<ul>
-							<li><a title="Table" id="table-button" name="table">&nbsp;</a></li>
-							<li><a title="Bar Chart" id="pie-button" name="pie-chart">&nbsp;</a></li>
-							<li><a title="Spark Lines" id="line-graph-button" style="margin-right: 0;" name="line-graph">&nbsp;</a></li>
+							<li><a title="Table" id="table-button" name="table-button">&nbsp;</a></li>
+							<li><a title="Bar Chart" id="pie-button" name="pie-button">&nbsp;</a></li>
+							<li><a title="Spark Lines" id="line-graph-button" style="margin-right: 0;" name="line-graph-button">&nbsp;</a></li>
 						</ul>
 						
 						
-						<form action="javascript:controlSubmit();">
-							<p>
+						<form action="javascript: formSubmitted()">
+							
+								<fieldset>
+								<legend>Date:</legend>
 								<label for="from-date">From:</label><br />
 								<input type="text" id="from-date" value="2011-09-27" />
-							</p>
-							<p> 
+					
+						
 								<label for="to-date">To:</label><br />
 								<input type="text" id="to-date" value="2011-09-28" />
-							</p>
-							<p>
-								<label for="number-results">Number of Results:</label>
-								<select id="number-results">
-								  <option value="10">10</option>
-								  <option value="20">20</option>
-								  <option value="50">50</option>
-								  <option value="100">100</option>
-								</select>
-							</p>
+								</fieldset>
+								<fieldset>
+								<legend>Filter by:</legend>
+								<!-- label for="frm-filter"></label><br / -->
+									<input type="text" id="frm-filter" value="Page Path" />
+									<span class="form-smaller" id="filter-op"><input class="operator" type="radio" name="operator" value="!" checked="checked" />Exclude</span>
+									<span class="form-smaller" id="filter-sp"><input class="operator" type="radio" name="operator" value="=" />Include</span>
+									<span class="form-smaller"><input class="specific" type="radio" name="specific" value="@"checked="checked" />Contains</span>
+									<span class="form-smaller"><input class="specific" type="radio" name="specific" value="=" />Exact</span>
+								</fieldset>
+							
 							<p>
 								<input id="submit-form" style="margin-top: 20px;" type="submit" value="Get Data" />
 							</p>
 						
 						</form>
 					</div>
-					
-					
-					
 				</div>
-				
-					
-				
 				</div>
-			
-			
 			<div style="clear: both;"></div>	
-
-		
 		</div>	
 	</div>
-	
 
-	<div class="footer">	
+<div class="footer">	
 		<div class="footer-inner">
 			<ul id="foot-hover">
 				<li>
@@ -140,10 +138,10 @@
 					<a href="http://www.gnu.org/licenses/gpl.html">License</a>
 				</li>
 				<li>
-					<a>Privacy and Your Data</a>
+					<a href="#">Privacy and Your Data</a>
 				</li>
 				<li>
-					<a>Contact</a>
+					<a href="#">Contact</a>
 				</li>
 			</ul>
 		</div>
@@ -173,9 +171,10 @@
 	<div id="loading-state-block">
 		<div><span>Loading...</span></div>
 	</div>
+	<script type="text/javascript" src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
 </body>
 
-<script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
+
 
 
 </html>

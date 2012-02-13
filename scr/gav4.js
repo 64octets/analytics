@@ -26,7 +26,8 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 		"metrics": "ga:pageviews,ga:uniquePageviews,ga:avgTimeOnPage,ga:bounces,ga:visitBounceRate",
 		"sort": "-ga:pageviews",
 		"maxResults": "10",
-		"startIndex": "1" 	
+		"startIndex": "1",
+		"filter": "ga:pagePath!=0101010101"		 	
 	};
 	
 	// Most Viewed Report Query
@@ -35,7 +36,8 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 		"dimensions": "ga:pagePath",
 		"metrics": "ga:pageviews,ga:uniquePageviews,ga:avgTimeOnPage,ga:bounces,ga:visitBounceRate",
 		"sort": "-ga:pageviews",
-		"startIndex": "1"	
+		"startIndex": "1",
+		"filter": "ga:pagePath!=0101010101" 	
 	};
 	
 	// Traffic Source Query
@@ -44,7 +46,8 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 		"dimensions": "ga:source",
 		"metrics": "ga:visitors,ga:percentNewVisits,ga:avgTimeOnSite,ga:bounces,ga:visitBounceRate",
 		"sort": "-ga:visitors",
-		"startIndex": "1"	
+		"startIndex": "1",
+		"filter": "ga:source!=0101010101"	
 	};
 	
 	// Organic Search Terms
@@ -53,7 +56,8 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 		"dimensions": "ga:keyword",
 		"metrics": "ga:visitors,ga:percentNewVisits,ga:avgTimeOnSite,ga:bounces,ga:visitBounceRate",
 		"sort": "-ga:visitors",
-		"startIndex": "1"	
+		"startIndex": "1",
+		"filter": "ga:keyword!=0101010101"	
 	};
 	
 
@@ -71,7 +75,6 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 	function checkAuth() {
 		gapi.auth.authorize({client_id: config.clientId, scope: config.scopes, immediate: true}, handleAuthResult);
 	}
-
 
 	function handleAuthResult(authResult) {
 		var authorizeButton = document.getElementById('authButton');
@@ -107,14 +110,6 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 			selectReport(currentReport);		
 		});
 		
-		// Form Submission Event
-		$('#submit-form').click(function() {
-			dataFeedQuery.startDate = $('#from-date').val();
-			dataFeedQuery.endDate = $('#to-date').val();
-			dataFeedQuery.maxResults = $('#number-results').val();
-			getDataFeed(dataFeedQuery);
-		}); 
-		
 		// Method Selection Event
 		$('#controls > ul > li > a').click(function() {
 			var currentMethod = $(this).attr('id');
@@ -147,8 +142,45 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 				console.log(footerUl);
 				$('#foot-pop-li > li').eq(footerUl).stop().animate({opacity: 0}, 500);			
 			}		
-		);			
-	});	
+		);
+		
+		$('#tab-prev').attr("disabled", true);
+		
+		$('#tab-prev').click (function() {
+			var current = new Number(dataFeedQuery.startIndex);
+			var pageSize = new Number(dataFeedQuery.maxResults);
+			dataFeedQuery.startIndex = current - pageSize;
+			$('.table-pager > span').html(dataFeedQuery.startIndex + " - " + (dataFeedQuery.startIndex + 9 ) + " results");
+			getDataFeed(dataFeedQuery);
+			if (dataFeedQuery.startIndex < 10) {
+				$('#tab-prev').attr("disabled", true);
+			} 						
+		});
+		
+		$('#tab-next').click (function() {
+			$('#tab-prev').attr("disabled", false);
+			var current = new Number(dataFeedQuery.startIndex);
+			var pageSize = new Number(dataFeedQuery.maxResults);
+			dataFeedQuery.startIndex = current + pageSize;
+			$('.table-pager > span').html(dataFeedQuery.startIndex + " - " + (dataFeedQuery.startIndex + 9 ) + " results");
+			getDataFeed(dataFeedQuery);
+		});
+
+	});
+					
+	// Form Submission Event
+	function formSubmitted() {
+		dataFeedQuery.startDate = $('#from-date').val();
+		dataFeedQuery.endDate = $('#to-date').val();
+		var filterValue = $('#frm-filter').val();
+		var filterOperator = $('.operator:checked').val();
+		var filterSpecific = $('.specific:checked').val();
+		console.log(filterOperator);
+		console.log(filterSpecific);
+		dataFeedQuery.filter = dataFeedQuery.dimensions + filterOperator + filterSpecific + filterValue;
+		console.log(dataFeedQuery.filter);
+		getDataFeed(dataFeedQuery);
+	} 	
 	
 	// Turn Loading State on
 	function loadingStateOn() {
@@ -229,7 +261,8 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 			'dimensions': dataFeedQuery.dimensions,
 			'sort': dataFeedQuery.sort,
 			'max-results': dataFeedQuery.maxResults,
-			'start-index': dataFeedQuery.startIndex 	
+			'start-index': dataFeedQuery.startIndex,
+			'filters':  dataFeedQuery.filter 	
 			}
 		});
 		restRequest.execute(function(response) {
@@ -251,6 +284,7 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 		var columnCount = response.columnHeaders.length; 
 		var columnTypeTime = [];
 		var columnTypePercent = new Array();
+		//dataFeedTable.addColumn('number', '');
 		for (var i = 0; i < columnCount; i++){
 			var tmpColumn = response.columnHeaders[i].name;
 			var tmpType = response.columnHeaders[i].dataType;
@@ -381,18 +415,18 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 	
 		// define css classes for tables
 		var tableClassNames = {
-				tableCell: 'table-size', 
-				oddTableRow: 'odd-table-row', 
-				hoverTableRow: 'hover-table-row',
-				selectedTableRow: 'selected-table-row',
-				headerRow: 'header-table-row'
-			 };
+			tableCell: 'table-size', 
+			oddTableRow: 'odd-table-row', 
+			hoverTableRow: 'hover-table-row',
+			selectedTableRow: 'selected-table-row',
+			headerRow: 'header-table-row'
+			};
 		
 		table.draw(data, {
-			showRowNumber: true,
+			showRowNumber: false,
 			width: 575, 
-			//sort: 'disable',
-			page: 'enable',
+			sort: 'disable',
+			page: 'disable',
 			pageSize: "10",
 			cssClassNames: tableClassNames
 			}
@@ -410,6 +444,6 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 	
 	//Shrink Page path text size
 	function firstColumnFix(){
-		$('tr > .table-size:nth-child(2)').addClass("width-cell");		//.css("font-size", "10" );
+		$('tr > .table-size:nth-child(1)').addClass("width-cell");		//.css("font-size", "10" );
 	}	
 		

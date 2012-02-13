@@ -62,7 +62,7 @@ box-shadow: rgba(0,0,0,0.6) 1px 3px 25px;
 border-radius: 3px;
 }
 
-#wrap-inner{width:960px; margin-left:20px; margin-right:20px; padding-top: 3px;}
+#wrap-inner{width:960px; margin-left:20px; margin-right:20px;}
 
 #header{
 position: relative;
@@ -82,9 +82,11 @@ padding: 10px 0px;
 }
 
 #nav{
-	float:left;
-	border-right: 3px solid #D1D1D1;
-	padding-bottom: 30px;
+float: left;
+border-right: 1px solid #D1D1D1;
+height: 555px;
+overflow: auto;
+background: -webkit-linear-gradient(right, rgba(0, 0, 0, 0.1) 0%,transparent 15%,transparent 100%)
 }
 	
 #content{
@@ -107,9 +109,10 @@ padding: 10px 0px;
 	width: 168px;
 	float: right;
 	padding: 20px;
-	border-left: 3px solid #D1D1D1;
+	border-left: 1px solid #D1D1D1;
 	padding-right: 0;
 	padding-top: 12px;
+	background: -webkit-linear-gradient(left, rgba(0, 0, 0, 0.1) 0%,transparent 10%,transparent 100%);
 }
 
 .footer{
@@ -265,7 +268,7 @@ font-size: 14px;
 }
 
 #controls input[type="text"]{
-width: 154px;
+width: 144px;
 height: 25px;
 font-style: italic;
 color: #888;
@@ -297,6 +300,9 @@ outline: 1px solid #edcc33;
 #controls label {
 margin-bottom: 3px;
 display: block;
+font-size: 0.8em;
+font-weight: 700;
+margin-top: 5px;
 }
 
 #controls br {
@@ -370,14 +376,54 @@ z-index: 10;
 }
 
 #table_div div {overflow-x: visible;}
-.width-cell{font-size: 0.75em!important; word-wrap: break-word;}
-.table-size{font-size: 12px;}
+.width-cell{
+word-wrap: break-word;
+max-width: 200px;
+line-height: 18px;
+text-align: left!important;
+}
+.table-size{font-size: 12px; text-align: right;}
 .odd-table-row{background-color: #F5F5F5;}
 .hover-table-row{background-color: #ABD3F5;}
 .selected-table-row{background-color: #67B3F5;}
 .header-table-row{background-color: #46A2F2; color: white; font-weight: 700; word-wrap: break-word;}
 
+.table-pager{
+text-align: right;
+padding: 5px 0px;
+font-size: 0.9em;
+border-bottom: 1px solid #D1D1D1;
+}
 
+#controls fieldset {
+	border: 1px solid #D1D1D1;
+	padding: 5px;
+	color: #888;
+	margin-bottom: 20px;
+}
+
+#controls legend {
+	font-weight: 700;
+}
+
+.form-smaller{
+	font-size: 0.8em!important;
+}
+
+#filter-op {
+	padding-top: 5px;
+	border-top: 1px solid #D1D1D1;
+	margin-top: 10px;
+}
+
+#filter-sp {
+	padding-bottom: 10px;
+	border-bottom: 1px solid #D1D1D1;
+}
+
+#table-sort {
+	float: left;
+}
 /*
  
 #inner-content td {
