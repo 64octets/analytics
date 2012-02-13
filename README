@@ -1,3 +1,69 @@
-Hello GIT
+Wordpress Analytics Dashboard
+------------------------------
 
-yep
+
+- Start up logic
+	- intro screen with table selection
+	- when loaded table, prompt to select report
+		- when selected default to most viewed
+
+- Reports selected
+|	- delete inner content
+|	- if data table hasnt been created
+|		- request feed
+|		- output table
+|		- add table active class
+|	- else data table exists
+|		- output table
+|		- add table active class
+	- set form default values
+		- filter input
+		- dates
+		
+	- Add Sort Functionality
+		- auto fill options
+		- submit on !:active
+		
+	- Select Method
+		- table
+			- show fields form
+		- bar
+			- show fields form
+		- line
+			- show fields form
+			
+	- Bar Method
+		- on submit take metric to graph by
+		
+	- Line Method
+		- on submit take metric to graph by	
+		- request line query 
+			- concat ga:date to dataFeedQuery.dimensions
+		- pivot data and visualise	
+	
+	
+|	- Form Flow on Submit
+|		- Change date in h3 on submit of form
+|		- if table 
+|			- push dates + no. results to main feed request
+|			- output table
+
+			
+======================== UI ============================
+			
+|- default loading state
+|	- custom spinner
+|	- fade out content
+|	- disable input in inner-content
+	
+- sampled data alert show
+	- show below header
+
+- error alert
+	
+- extend graph
+	- fold in controls
+		- show pop back 
+	- extend inner content
+	- send new size to visualisation method
+		- ouput new visualisation
