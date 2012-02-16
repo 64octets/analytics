@@ -424,7 +424,7 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 		
 		table.draw(data, {
 			showRowNumber: false,
-			width: 575, 
+			width: 595, 
 			sort: 'disable',
 			page: 'disable',
 			pageSize: "10",
@@ -432,6 +432,7 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 			}
 		); //Output Table
 		
+	// UI Adjustments	
 		//set method button
 		$('#controls').find('a').removeClass();
 		$('#table-button').addClass('table-button-active');
@@ -444,6 +445,6 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 	
 	//Shrink Page path text size
 	function firstColumnFix(){
-		$('tr > .table-size:nth-child(1)').addClass("width-cell");		//.css("font-size", "10" );
+		$('tr > .table-size:nth-child(1)').addClass("width-cell");
 	}	
 		
