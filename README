@@ -25,22 +25,16 @@ Wordpress Analytics Dashboard
 		- submit on !:active
 		
 	- Select Method
-		- table
-			- show fields form
-		- bar
-			- show fields form
-		- line
-			- show fields form
-			
-	- Bar Method
-		- on submit take metric to graph by
+		- refresh form fields
+		- Bar/line Method
+			- on submit take metric to graph by
 		
-	- Line Method
-		- on submit take metric to graph by	
-		- request line query 
+		- Line Method
 			- concat ga:date to dataFeedQuery.dimensions
-		- pivot data and visualise	
+			- pivot data and visualise
 	
+	- Rewrite paging to use single function	
+		- test index of button
 	
 |	- Form Flow on Submit
 |		- Change date in h3 on submit of form
@@ -60,6 +54,8 @@ Wordpress Analytics Dashboard
 	- show below header
 
 - error alert
+	- no results returned
+	- api error
 	
 - extend graph
 	- fold in controls
@@ -67,3 +63,9 @@ Wordpress Analytics Dashboard
 	- extend inner content
 	- send new size to visualisation method
 		- ouput new visualisation
+		
+	- alternatively fold controls under visualisation.
+		- float based approach
+		- animate width of #inner-content
+		
+- rewirte cruddy footer hover.
