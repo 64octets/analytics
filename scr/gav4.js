@@ -146,8 +146,9 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 			}		
 		);
 		
+		//Table paging
 		$('#tab-prev').attr("disabled", true);
-		
+			
 		$('#tab-prev').click (function() {
 			var current = new Number(dataFeedQuery.startIndex);
 			var pageSize = new Number(dataFeedQuery.maxResults);
@@ -167,6 +168,11 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 			$('#table-page-count').html(dataFeedQuery.startIndex + " - " + (dataFeedQuery.startIndex + 9 ) + " results");
 			getDataFeed(dataFeedQuery);
 		});
+		
+		//Dismiss Alert bar
+		$('.alert-close').click (function() {
+			$('#alert-bar').slideUp(600);	
+		});	
 
 	});
 					
@@ -202,7 +208,6 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 		end = $.datepicker.formatDate('dd-mm-y', end);
 		$('#inner-content > h3').html(dataFeedQuery.title + ": " + start + " to " + end);
 	}
-	
 	
 /**======================
 	Select Report and Submit Query
@@ -269,6 +274,7 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 		});
 		restRequest.execute(function(response) {
 			console.log(response);
+			$('#alert-bar').slideUp(600);
 			handleError(response); 
 		});
 	}	  
@@ -286,15 +292,12 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 			$('.alert-message').html("Error " + response.error.code + ": " + response.error.message + " no results returned");
 			$('#alert-bar').removeClass().addClass("red-alert").slideDown();
 			$('#table_div').hide();	
-		} 
-		
+		}		
 		else if(response.containsSampledData == true) {
 			$('.alert-message').html("This report contains sampled data.");
 			$('#alert-bar').removeClass().addClass("yellow-alert").slideDown();
 			handleDataFeed(response); 	
-		} 
-		
-		else {
+		} else {
 			handleDataFeed(response);
 		}
 	}
