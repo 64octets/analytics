@@ -83,7 +83,7 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 			$('#authButton').attr("href", "https://www.google.com/accounts/Logout");
 			var retObj = gapi.auth.getToken();
 			config.accessToken = retObj.access_token;
-			console.log(config);			
+			//console.log(config);			
 			getDataFeed(dataFeedQuery);
 		} else {
 			authorizeButton.innerHTML = 'Login'
@@ -105,6 +105,8 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 		// Get link clicked in left nav
 		$('#nav > ul > li').click(function() {
 			// slice "nav-" off id
+			$('#nav > ul > li').removeClass();
+			$(this).addClass('active-report');
 			var currentReport = $(this).attr('id').slice(4);
 			// Send ID to selectReport
 			selectReport(currentReport);		
@@ -133,13 +135,13 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 			function(){
 				var footerUl = $(this).index();
 				//var footerli = index(footerUl);
-				console.log(footerUl);
+				//console.log(footerUl);
 				$('#foot-pop-li > li').eq(footerUl).stop().animate({opacity: 0.9}, 500);			
 			},
 			function(){
 				var footerUl = $(this).index();
 				//var footerli = index(footerUl);
-				console.log(footerUl);
+				//console.log(footerUl);
 				$('#foot-pop-li > li').eq(footerUl).stop().animate({opacity: 0}, 500);			
 			}		
 		);
@@ -150,7 +152,7 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 			var current = new Number(dataFeedQuery.startIndex);
 			var pageSize = new Number(dataFeedQuery.maxResults);
 			dataFeedQuery.startIndex = current - pageSize;
-			$('.table-pager > span').html(dataFeedQuery.startIndex + " - " + (dataFeedQuery.startIndex + 9 ) + " results");
+			$('#table-page-count').html(dataFeedQuery.startIndex + " - " + (dataFeedQuery.startIndex + 9 ) + " results");
 			getDataFeed(dataFeedQuery);
 			if (dataFeedQuery.startIndex < 10) {
 				$('#tab-prev').attr("disabled", true);
@@ -162,7 +164,7 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 			var current = new Number(dataFeedQuery.startIndex);
 			var pageSize = new Number(dataFeedQuery.maxResults);
 			dataFeedQuery.startIndex = current + pageSize;
-			$('.table-pager > span').html(dataFeedQuery.startIndex + " - " + (dataFeedQuery.startIndex + 9 ) + " results");
+			$('#table-page-count').html(dataFeedQuery.startIndex + " - " + (dataFeedQuery.startIndex + 9 ) + " results");
 			getDataFeed(dataFeedQuery);
 		});
 
@@ -175,10 +177,10 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 		var filterValue = $('#frm-filter').val();
 		var filterOperator = $('.operator:checked').val();
 		var filterSpecific = $('.specific:checked').val();
-		console.log(filterOperator);
-		console.log(filterSpecific);
+		//console.log(filterOperator);
+		//console.log(filterSpecific);
 		dataFeedQuery.filter = dataFeedQuery.dimensions + filterOperator + filterSpecific + filterValue;
-		console.log(dataFeedQuery.filter);
+		//console.log(dataFeedQuery.filter);
 		getDataFeed(dataFeedQuery);
 	} 	
 	
@@ -266,135 +268,167 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 			}
 		});
 		restRequest.execute(function(response) {
-			console.log(response); 
-			handleDataFeed(response); 
+			console.log(response);
+			handleError(response); 
 		});
 	}	  
+	 
+	 
+/**==================
+	MAIN METHOD - Error Handler
+		==========================*/		 
+	 
+	function handleError (response) {	 
+	 		
+		if (typeof response.error !="undefined") {
+			//console.log(response.error);
+			loadingStateOff();
+			$('.alert-message').html("Error " + response.error.code + ": " + response.error.message + " no results returned");
+			$('#alert-bar').removeClass().addClass("red-alert").slideDown();
+			$('#table_div').hide();	
+		} 
+		
+		else if(response.containsSampledData == true) {
+			$('.alert-message').html("This report contains sampled data.");
+			$('#alert-bar').removeClass().addClass("yellow-alert").slideDown();
+			handleDataFeed(response); 	
+		} 
+		
+		else {
+			handleDataFeed(response);
+		}
+	}
+	 
+	 
+	 
+	 
 	  
 /**==================
 	MAIN METHOD - Handle Data Feed
 		==========================*/	
 
 	function handleDataFeed(response) {
-		// Setup Data Feed Table
-		var dataFeedTable = new google.visualization.DataTable();
-		
-		//Print Table Headers
-		var columnTypeArray = [];
-		var columnCount = response.columnHeaders.length; 
-		var columnTypeTime = [];
-		var columnTypePercent = new Array();
-		//dataFeedTable.addColumn('number', '');
-		for (var i = 0; i < columnCount; i++){
-			var tmpColumn = response.columnHeaders[i].name;
-			var tmpType = response.columnHeaders[i].dataType;
-			dataFeedTable.addColumn(columnType(tmpType, i), columnName(tmpColumn));
-			columnTypeArray[i] = tmpType;
-		}
-		
-		// Function to return column title
-		function columnName(tmpColumn) {
-			var tmpColumn = tmpColumn.slice(3);
-			// Preceed Uppercase (or sets of) with commas then remove any
-			var Delimted = tmpColumn.replace(/([A-Z]+)/g, ",$1").replace(/^,/, "");
-			// Split the string on commas and return the array
-			Delimted = Delimted.split(",");
-			return Delimted.join(" ");    
-		}
 
-		// Function to return column type
-		function columnType(tmpType, columnId) {
-		//var columnTypeTime = [];
-		//var columnTypePercent = new Array();
-			if (tmpType === "STRING"){
-				tmpType = "string";
+			// Setup Data Feed Table
+			var dataFeedTable = new google.visualization.DataTable();
+			console.log(response.containsSampledData);
+			//Print Table Headers
+			var columnTypeArray = [];
+			var columnCount = response.columnHeaders.length; 
+			var columnTypeTime = [];
+			var columnTypePercent = new Array();
+			//dataFeedTable.addColumn('number', '');
+			for (var i = 0; i < columnCount; i++){
+				var tmpColumn = response.columnHeaders[i].name;
+				var tmpType = response.columnHeaders[i].dataType;
+				dataFeedTable.addColumn(columnType(tmpType, i), columnName(tmpColumn));
+				columnTypeArray[i] = tmpType;
 			}
-			else if (tmpType === "INTEGER"){
-				tmpType = "number";
-				//console.log(tmpType);
-			} 
-			else if (tmpType === "TIME"){
-				if (typeof columnTypeTime === 'undefined'){
-					//console.log(columnTypePercent);
-					columnTypeTime[0] = columnId;
-				} else {
-					//console.log(columnTypePercent);
-					columnTypeTime.push(columnId);
-				}
-				//xxcolumnTypeTime.push(columnId);
-				tmpType = "string";
-				//console.log(tmpType);
-			} 
-			else if (tmpType === "PERCENT"){
-				if (typeof columnTypePercent === 'undefined'){
-					//console.log(columnTypePercent);
-					columnTypePercent.push(columnId);
-				} else {
-					//console.log(columnTypePercent);
-					columnTypePercent.push(columnId);
-				}
-				tmpType = "number";
-				//console.log(tmpType);
-			} else {
-				alert('data type not recognised' + tmpType);
-			}
-			console.log(columnTypeTime);
-			console.log(columnTypePercent);
-			return(tmpType);
 			
-		}
-	//Format decimal time (28.0909678) into hh:mm:ss
-	function decimalTime(secs)
-	{
-	    var hours = Math.floor(secs / (60 * 60));
-	   
-	    var divisor_for_minutes = secs % (60 * 60);
-	    var minutes = Math.floor(divisor_for_minutes / 60);
-	 
-	    var divisor_for_seconds = divisor_for_minutes % 60;
-	    var seconds = Math.ceil(divisor_for_seconds);
-	   
-		var obj = [hours, minutes, seconds]
-		console.log(obj);
-		//pad to format of hh:mm:ss
-		for (var i = 0; i < obj.length; i++){
-			if (obj[i] < 10 ) {
-				obj[i] = String("0" + obj[i]);
-			} 
-		}
-		obj = obj.join(":");
-		console.log(obj);
-		return (obj);
-	   
-	}
+			// Function to return column title
+			function columnName(tmpColumn) {
+				var tmpColumn = tmpColumn.slice(3);
+				// Preceed Uppercase (or sets of) with commas then remove any
+				var Delimted = tmpColumn.replace(/([A-Z]+)/g, ",$1").replace(/^,/, "");
+				// Split the string on commas and return the array
+				Delimted = Delimted.split(",");
+				return Delimted.join(" ");    
+			}
+	
+			// Function to return column type
+			function columnType(tmpType, columnId) {
+			//var columnTypeTime = [];
+			//var columnTypePercent = new Array();
+				if (tmpType === "STRING"){
+					tmpType = "string";
+				}
+				else if (tmpType === "INTEGER"){
+					tmpType = "number";
+					//console.log(tmpType);
+				} 
+				else if (tmpType === "TIME"){
+					if (typeof columnTypeTime === 'undefined'){
+						//console.log(columnTypePercent);
+						columnTypeTime[0] = columnId;
+					} else {
+						//console.log(columnTypePercent);
+						columnTypeTime.push(columnId);
+					}
+					//xxcolumnTypeTime.push(columnId);
+					tmpType = "string";
+					//console.log(tmpType);
+				} 
+				else if (tmpType === "PERCENT"){
+					if (typeof columnTypePercent === 'undefined'){
+						//console.log(columnTypePercent);
+						columnTypePercent.push(columnId);
+					} else {
+						//console.log(columnTypePercent);
+						columnTypePercent.push(columnId);
+					}
+					tmpType = "number";
+					//console.log(tmpType);
+				} else {
+					alert('data type not recognised' + tmpType);
+				}
+				//console.log(columnTypeTime);
+				//console.log(columnTypePercent);
+				return(tmpType);
+				
+			}
+			
+			//Format decimal time (28.0909678) into hh:mm:ss
+			function decimalTime(secs)
+			{
+			    var hours = Math.floor(secs / (60 * 60));
+			   
+			    var divisor_for_minutes = secs % (60 * 60);
+			    var minutes = Math.floor(divisor_for_minutes / 60);
+			 
+			    var divisor_for_seconds = divisor_for_minutes % 60;
+			    var seconds = Math.ceil(divisor_for_seconds);
+			   
+				var obj = [hours, minutes, seconds]
+				//console.log(obj);
+				//pad to format of hh:mm:ss
+				for (var i = 0; i < obj.length; i++){
+					if (obj[i] < 10 ) {
+						obj[i] = String("0" + obj[i]);
+					} 
+				}
+				obj = obj.join(":");
+				//console.log(obj);
+				return (obj);
+			   
+			}
+			
+			// Add row data
+			var rowCount = response.rows.length;
+			for(var i = 0; i < rowCount; i++ ) {
+				var	row = response.rows[i];
+	
+				
+				for(var ii = 0; ii < row.length; ii++) {
+				var timeType = columnTypeTime;
+				//console.log(timeType);
+					if (isNaN(row[ii])) {
+						row[ii] = row[ii];
+					}
+					else if (ii == timeType) {
+						//console.log("r");
+						row[ii] = decimalTime(row[ii]);
+					} else {
+						row[ii] = parseFloat(row[ii]);	
+					}
+				}
+				
+				//console.log(row);
+				dataFeedTable.addRows([row]);
+			}		
+			//console.log(columnTypeTime);
+			//console.log(columnTypePercent);
+			createTable(dataFeedTable, columnTypeTime, columnTypePercent);
 		
-		// Add row data
-		var rowCount = response.rows.length;
-		for(var i = 0; i < rowCount; i++ ) {
-			var	row = response.rows[i];
-
-			
-			for(var ii = 0; ii < row.length; ii++) {
-			var timeType = columnTypeTime;
-			console.log(timeType);
-				if (isNaN(row[ii])) {
-					row[ii] = row[ii];
-				}
-				else if (ii == timeType) {
-					console.log("r");
-					row[ii] = decimalTime(row[ii]);
-				} else {
-					row[ii] = parseFloat(row[ii]);	
-				}
-			}
-			
-			console.log(row);
-			dataFeedTable.addRows([row]);
-		}		
-		console.log(columnTypeTime);
-		console.log(columnTypePercent);
-		createTable(dataFeedTable, columnTypeTime, columnTypePercent);
-		 
 	}	
 	
 	// Create visualisation table	
@@ -424,7 +458,7 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 		
 		table.draw(data, {
 			showRowNumber: false,
-			width: 595, 
+			width: 615, 
 			sort: 'disable',
 			page: 'disable',
 			pageSize: "10",

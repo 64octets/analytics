@@ -24,7 +24,12 @@
 	</div>
 	
 	<div id="wrap">
-		<div id="alert-bar" class="red-alert"><span></span><p>Warning: Results contain sampled data</p></div>	
+		<div id="alert-bar" class="red-alert">
+			<ul>
+				<li class="alert-icon"></li>
+				<li class="alert-message">Warning: Results contain sampled data</li>
+				<li class="alert-close">X</li>
+			</ul></div>	
 		<div id="wrap-inner">
 				<div id="nav">
 					<ul>
@@ -70,7 +75,7 @@
 								<option value="audi">Audi</option>
 							</select>
 							</span>
-							<span>1 - 10 results</span>
+							<span id="table-page-count">1 - 10 results</span>
 							<button id="tab-prev">Prev</button>
 							<button id="tab-next">Next</button>
 						</div>
