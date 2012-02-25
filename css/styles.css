@@ -88,13 +88,17 @@ padding: 10px 0px;
 
 #nav{
 float: left;
-overflow: hidden;
+}
+
+#nav ul{
+position: relative;
 }
 	
 #content{
 width: 847px;
 float: right;
 box-shadow: -5px 5px 25px rgba(0,0,0,0.4);
+border-left: 1px solid #888;
 }
 
 
@@ -207,11 +211,16 @@ margin: 0;
 
 .active-report {
 background: #EEE!important;
-box-shadow: 0px 5px 15px rgba(0,0,0,0.4);
-position: relative;
 border-right: 1px solid #EEE;
 border-radius: 2px;
-right: -2px;
+right: -3px;
+border-left: 1px solid #888;
+width: 140px!important;
+border-bottom: 1px solid #888;
+border-top: 1px solid #888;
+position: absolute;
+z-index: 5;
+box-shadow: -3px 3px 3px #888;
 }
 
 #nav li:hover {
