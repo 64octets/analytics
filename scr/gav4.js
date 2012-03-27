@@ -60,7 +60,14 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 		"filter": "ga:keyword!=0101010101"	
 	};
 	
-
+	var sparkLineQuery = {
+		"title": "Spark Line Visualisation",
+		"startDate": "2011-11-01",
+		"endDate": "2011-12-05",
+		"dimensions": "ga:week",
+		"metrics": "ga:visitors,ga:pageviewsPerVisit,ga:avgTimeOnSite,ga:visitBounceRate,ga:percentNewVisits",
+		"startIndex": "1"
+	};
 
 /**====================	
 	OAUTH 2.0 AUTHENTICATION
@@ -131,21 +138,22 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 			accountID = $('#tableId').val();
 		});
 		
-		$('.footer > div > ul > li').hover(
+/*		//footer 
+		$('#foot-hover li').hover(
 			function(){
 				var footerUl = $(this).index();
 				//var footerli = index(footerUl);
-				//console.log(footerUl);
-				$('#foot-pop-li > li').eq(footerUl).stop().animate({opacity: 0.9}, 500);			
+				console.log(footerUl);
+				$('#foot-pop-li > li > span').eq(footerUl).stop().show(700);			
 			},
 			function(){
 				var footerUl = $(this).index();
 				//var footerli = index(footerUl);
-				//console.log(footerUl);
-				$('#foot-pop-li > li').eq(footerUl).stop().animate({opacity: 0}, 500);			
-			}		
+				console.log(footerUl);
+				$('#foot-pop-li > li > span').eq(footerUl).stop().hide(900);
+			}	
 		);
-		
+*/		
 		//Table paging
 		$('#tab-prev').attr("disabled", true);
 			
@@ -213,7 +221,7 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 	Select Report and Submit Query
 		=============================**/
  /* Select report depending on nav id, merge report query with main
- *  query method and submit to getDataFeed
+ *  query object and submit to getDataFeed
  */	
 	function selectReport(currentReport) {
 		
@@ -229,7 +237,9 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 			$.extend(dataFeedQuery, searchTermQuery);
 			getDataFeed(dataFeedQuery);
 		}
-		else if(currentReport === "internal-search") {
+		else if(currentReport === "spark-lines") {
+			$.extend(dataFeedQuery, sparkLineQuery);
+			getDataFeed(dataFeedQuery);
 			//$.extend(dataFeedQuery, trafficSourceQuery);
 			//console.log(dataFeedQuery);
 		}
@@ -245,7 +255,7 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 			//$.extend(dataFeedQuery, trafficSourceQuery);
 			//console.log(dataFeedQuery);
 		} else {
-		alert('error - report not found');
+			alert('error - report not found');
 		}
 	}
 	
@@ -266,10 +276,10 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 			'end-date' : dataFeedQuery.endDate,
 			'metrics': dataFeedQuery.metrics,
 			'dimensions': dataFeedQuery.dimensions,
-			'sort': dataFeedQuery.sort,
+			//'sort': dataFeedQuery.sort,
 			'max-results': dataFeedQuery.maxResults,
-			'start-index': dataFeedQuery.startIndex,
-			'filters':  dataFeedQuery.filter 	
+			'start-index': dataFeedQuery.startIndex
+			//'filters':  dataFeedQuery.filter 	
 			}
 		});
 		restRequest.execute(function(response) {
@@ -314,7 +324,6 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 
 			// Setup Data Feed Table
 			var dataFeedTable = new google.visualization.DataTable();
-			console.log(response.containsSampledData);
 			//Print Table Headers
 			var columnTypeArray = [];
 			var columnCount = response.columnHeaders.length; 
@@ -324,8 +333,9 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 			for (var i = 0; i < columnCount; i++){
 				var tmpColumn = response.columnHeaders[i].name;
 				var tmpType = response.columnHeaders[i].dataType;
-				dataFeedTable.addColumn(columnType(tmpType, i), columnName(tmpColumn));
+				dataFeedTable.addColumn(columnType(tmpType, i, tmpColumn), columnName(tmpColumn));
 				columnTypeArray[i] = tmpType;
+				console.log(tmpType);
 			}
 			
 			// Function to return column title
@@ -339,16 +349,16 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 			}
 	
 			// Function to return column type
-			function columnType(tmpType, columnId) {
+			function columnType(tmpType, columnId, tmpColumn) {
 			//var columnTypeTime = [];
 			//var columnTypePercent = new Array();
-				if (tmpType === "STRING"){
-					tmpType = "string";
-				}
-				else if (tmpType === "INTEGER"){
+				if (tmpType === "INTEGER" || tmpColumn === "ga:week"){
 					tmpType = "number";
 					//console.log(tmpType);
 				} 
+				else if (tmpType === "STRING"){
+					tmpType = "string";
+				}
 				else if (tmpType === "TIME"){
 					if (typeof columnTypeTime === 'undefined'){
 						//console.log(columnTypePercent);
@@ -371,6 +381,9 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 					}
 					tmpType = "number";
 					//console.log(tmpType);
+				}
+				else if (tmpType === "FLOAT"){
+					tmpType = "number";
 				} else {
 					alert('data type not recognised' + tmpType);
 				}
@@ -446,7 +459,7 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 			for(var i=0; i < columnTypePercent.length; i++) {
 				var formatter = new google.visualization.NumberFormat(
 				{fractionDigits: 2, suffix: "%"});
-				formatter.format(data, columnTypePercent[i]); // Apply formatter to fifth column
+				formatter.format(data, columnTypePercent[i]); // Apply formatter percentage columns
 			}
 		}
 	

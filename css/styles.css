@@ -93,6 +93,14 @@ float: left;
 #nav ul{
 position: relative;
 }
+
+#nav h5 {
+font-size: 18px;
+padding: 15px 10px;
+background: #333;
+color: #EEE;
+font-weight: 700;
+}
 	
 #content{
 width: 847px;
@@ -138,6 +146,9 @@ margin: 0 auto;
 display: inline-block;
 width: 196px;
 text-align: center;
+}
+
+#foot-hover li {
 padding: 10px 0px;
 }
 
@@ -161,7 +172,15 @@ text-decoration: underline;
 
 .footer-pop li {
 	background: rgba(0, 0, 0, 0.85);
-	opacity: 0;
+}
+#foot-pop-li a {
+padding: 10px 10px;
+display: block;
+}
+
+.footer-pop span {
+	display: none;
+	padding: 10px 0px;
 }
 
 .footer-pop p {
@@ -218,7 +237,7 @@ border-left: 1px solid #888;
 width: 140px!important;
 border-bottom: 1px solid #888;
 border-top: 1px solid #888;
-position: absolute;
+position: relative;
 z-index: 5;
 box-shadow: -3px 3px 3px #888;
 }
