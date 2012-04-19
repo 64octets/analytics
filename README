@@ -1,4 +1,5 @@
-# Wordpress Analytics Dashboard
+Wordpress Analytics Dashboard
+===============================
 
 The aim of this project is to produce a customisable dashboard that can sit within Wordpress admin dashboard. 
 
@@ -8,7 +9,8 @@ Built with customisation in mind it will allow to view key KPI's and your popula
 
 The dashboard format is aimed at helping you spot issues at a glance.
 
-## Components used
+Components used
+-----------------
 *	Javascript
 *	jQuery
 *	Google Reporting API
