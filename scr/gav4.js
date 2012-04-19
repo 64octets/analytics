@@ -20,53 +20,84 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 	// Analytics Feed Query with default values
 	var dataFeedQuery = {
 		"title": "Most Viewed",
-		"startDate": "2009-04-01",
-		"endDate": "2009-04-05",
-		"dimensions": "ga:pagePath",
-		"metrics": "ga:pageviews,ga:uniquePageviews,ga:avgTimeOnPage,ga:bounces,ga:visitBounceRate",
-		"sort": "-ga:pageviews",
-		"maxResults": "10",
-		"startIndex": "1",
-		"filter": "ga:pagePath!=0101010101"		 	
+		"method": "table",
+		"params": {
+			'access_token': config.accessToken,
+			'ids': config.tableId,
+			"start-date": "2009-04-01",
+			"end-date": "2009-04-05",
+			"dimensions": "ga:pagePath",
+			"metrics": "ga:pageviews,ga:uniquePageviews,ga:avgTimeOnPage,ga:bounces,ga:visitBounceRate",
+			"sort": "-ga:pageviews",
+			"max-results": "10",
+			"start-index": "1",
+		}		 	
 	};
 	
 	// Most Viewed Report Query
 	var mostViewedQuery = {
 		"title": "Most Viewed",
-		"dimensions": "ga:pagePath",
-		"metrics": "ga:pageviews,ga:uniquePageviews,ga:avgTimeOnPage,ga:bounces,ga:visitBounceRate",
-		"sort": "-ga:pageviews",
-		"startIndex": "1",
-		"filter": "ga:pagePath!=0101010101" 	
+		"method": "table",
+		"params": {
+			'access_token': config.accessToken,
+			'ids': config.tableId,
+			"start-date": dataFeedQuery.params["start-date"],
+			"end-date": dataFeedQuery.params["end-date"],
+			"dimensions": "ga:pagePath",
+			"metrics": "ga:pageviews,ga:uniquePageviews,ga:avgTimeOnPage,ga:bounces,ga:visitBounceRate",
+			"sort": "-ga:pageviews",
+			"start-index": "1",
+			"max-results": dataFeedQuery.params["max-results"],
+		} 	
 	};
 	
 	// Traffic Source Query
 	var trafficSourceQuery = {
 		"title": "Traffic Sources",
-		"dimensions": "ga:source",
-		"metrics": "ga:visitors,ga:percentNewVisits,ga:avgTimeOnSite,ga:bounces,ga:visitBounceRate",
-		"sort": "-ga:visitors",
-		"startIndex": "1",
-		"filter": "ga:source!=0101010101"	
+		"method": "table",
+		"params": {
+			'access_token': config.accessToken,
+			'ids': config.tableId,
+			"start-date": dataFeedQuery.params["start-date"],
+			"end-date": dataFeedQuery.params["end-date"],
+			"dimensions": "ga:source",
+			"metrics": "ga:visitors,ga:percentNewVisits,ga:avgTimeOnSite,ga:bounces,ga:visitBounceRate",
+			"sort": "-ga:visitors",
+			"start-index": "1",
+			"max-results": dataFeedQuery.params["max-results"],
+		}
 	};
 	
 	// Organic Search Terms
 	var searchTermQuery = {
 		"title": "Search Terms",
-		"dimensions": "ga:keyword",
-		"metrics": "ga:visitors,ga:percentNewVisits,ga:avgTimeOnSite,ga:bounces,ga:visitBounceRate",
-		"sort": "-ga:visitors",
-		"startIndex": "1",
-		"filter": "ga:keyword!=0101010101"	
+		"method": "table",
+		"params": {
+			'access_token': config.accessToken,
+			'ids': config.tableId,
+			"start-date": dataFeedQuery.params["start-date"],
+			"end-date": dataFeedQuery.params["end-date"],
+			"dimensions": "ga:keyword",
+			"metrics": "ga:visitors,ga:percentNewVisits,ga:avgTimeOnSite,ga:bounces,ga:visitBounceRate",
+			"sort": "-ga:visitors",
+			"start-index": "1",
+			"max-results": dataFeedQuery.params["max-results"],
+			"filter": "ga:keyword!=0101010101"	
+		}
 	};
 	
 	var sparkLineQuery = {
 		"title": "Spark Line Visualisation",
-		"startDate": "2011-11-01",
-		"endDate": "2011-12-05",
-		"dimensions": "ga:week",
-		"metrics": "ga:visitors,ga:pageviewsPerVisit,ga:avgTimeOnSite,ga:visitBounceRate,ga:percentNewVisits",
-		"startIndex": "1"
+		"method": "spark",
+		"params": {
+			'access_token': config.accessToken,
+			'ids': config.tableId,
+			"start-date": dataFeedQuery.params["start-date"],
+			"end-date": dataFeedQuery.params["end-date"],
+			"dimensions": "ga:week",
+			"metrics": "ga:visitors,ga:pageviewsPerVisit,ga:avgTimeOnSite,ga:visitBounceRate,ga:percentNewVisits",
+			"start-index": "1",
+		}
 	};
 
 /**====================	
@@ -132,13 +163,13 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 		$(function() {
 			$( "#from-date, #to-date" ).datepicker({dateFormat: 'yy-mm-dd' });
 		});		
-
+/*
 		// Set Namespace accountID variable
 		$('#confirm-acc-id').click(function() {
 			accountID = $('#tableId').val();
 		});
 		
-/*		//footer 
+		//footer 
 		$('#foot-hover li').hover(
 			function(){
 				var footerUl = $(this).index();
@@ -158,10 +189,10 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 		$('#tab-prev').attr("disabled", true);
 			
 		$('#tab-prev').click (function() {
-			var current = new Number(dataFeedQuery.startIndex);
-			var pageSize = new Number(dataFeedQuery.maxResults);
-			dataFeedQuery.startIndex = current - pageSize;
-			$('#table-page-count').html(dataFeedQuery.startIndex + " - " + (dataFeedQuery.startIndex + 9 ) + " results");
+			var current = new Number(dataFeedQuery.params["start-index"]);
+			var pageSize = new Number(dataFeedQuery.params["max-results"]);
+			dataFeedQuery.params["start-index"] = current - pageSize;
+			$('#table-page-count').html(dataFeedQuery.params["start-index"] + " - " + (dataFeedQuery.params["start-index"] + 9 ) + " results");
 			getDataFeed(dataFeedQuery);
 			if (dataFeedQuery.startIndex < 10) {
 				$('#tab-prev').attr("disabled", true);
@@ -170,10 +201,10 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 		
 		$('#tab-next').click (function() {
 			$('#tab-prev').attr("disabled", false);
-			var current = new Number(dataFeedQuery.startIndex);
-			var pageSize = new Number(dataFeedQuery.maxResults);
-			dataFeedQuery.startIndex = current + pageSize;
-			$('#table-page-count').html(dataFeedQuery.startIndex + " - " + (dataFeedQuery.startIndex + 9 ) + " results");
+			var current = new Number(dataFeedQuery.params["start-index"]);
+			var pageSize = new Number(dataFeedQuery.params["max-results"]);
+			dataFeedQuery.params["start-index"] = current + pageSize;
+			$('#table-page-count').html(dataFeedQuery.params["start-index"] + " - " + (dataFeedQuery.params["start-index"] + 9 ) + " results");
 			getDataFeed(dataFeedQuery);
 		});
 		
@@ -210,11 +241,17 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 	
 	//Update Title with report and date
 	function titleUpdate() {
-		var start = new Date(dataFeedQuery.startDate);
-		var end = new Date(dataFeedQuery.endDate);
+		//console.log(dataFeedQuery);
+		var start = new Date(dataFeedQuery.params["start-date"]);
+		var end = new Date(dataFeedQuery.params["end-date"]);
 		start = $.datepicker.formatDate('dd-mm-y', start);
 		end = $.datepicker.formatDate('dd-mm-y', end);
 		$('#inner-content > h3').html(dataFeedQuery.title + ": " + start + " to " + end);
+	}
+	
+	//Shrink Page path text size
+	function firstColumnFix(){
+		$('tr > .table-size:nth-child(1)').addClass("width-cell");
 	}
 	
 /**======================
@@ -226,22 +263,26 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 	function selectReport(currentReport) {
 		
 		if(currentReport === "most-viewed") {
-			$.extend(dataFeedQuery, mostViewedQuery);
-			getDataFeed(dataFeedQuery);				
+			dataFeedQuery = {};
+			dataFeedQuery = mostViewedQuery;
+			getDataFeed(dataFeedQuery);			
 		}
 		else if(currentReport === "traffic-sources") {
-			$.extend(dataFeedQuery, trafficSourceQuery);
+			dataFeedQuery = {};
+			dataFeedQuery = trafficSourceQuery;
 			getDataFeed(dataFeedQuery);
+			
 		}
 		else if(currentReport === "search-terms") {
-			$.extend(dataFeedQuery, searchTermQuery);
+			dataFeedQuery = {};
+			dataFeedQuery = searchTermQuery;
 			getDataFeed(dataFeedQuery);
+			
 		}
 		else if(currentReport === "spark-lines") {
-			$.extend(dataFeedQuery, sparkLineQuery);
+			dataFeedQuery = {};
+			dataFeedQuery = sparkLineQuery;
 			getDataFeed(dataFeedQuery);
-			//$.extend(dataFeedQuery, trafficSourceQuery);
-			//console.log(dataFeedQuery);
 		}
 		else if(currentReport === "conversions") {
 			//$.extend(dataFeedQuery, trafficSourceQuery);
@@ -269,7 +310,7 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 		loadingStateOn();	  
 		var restRequest = gapi.client.request({
 			'path': '/analytics/v3/data/ga',
-			'params': {
+			'params': data.params  /*
 			'access_token': config.accessToken,
 			'ids': config.tableId,
 			'start-date': dataFeedQuery.startDate,
@@ -280,7 +321,8 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 			'max-results': dataFeedQuery.maxResults,
 			'start-index': dataFeedQuery.startIndex
 			//'filters':  dataFeedQuery.filter 	
-			}
+			} */
+
 		});
 		restRequest.execute(function(response) {
 			console.log(response);
@@ -335,7 +377,7 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 				var tmpType = response.columnHeaders[i].dataType;
 				dataFeedTable.addColumn(columnType(tmpType, i, tmpColumn), columnName(tmpColumn));
 				columnTypeArray[i] = tmpType;
-				console.log(tmpType);
+				//console.log(tmpType);
 			}
 			
 			// Function to return column title
@@ -442,9 +484,9 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 				dataFeedTable.addRows([row]);
 			}		
 			//console.log(columnTypeTime);
-			//console.log(columnTypePercent);
-			createTable(dataFeedTable, columnTypeTime, columnTypePercent);
-		
+			//console.log(dataFeedTable);
+
+				createTable(dataFeedTable, columnTypeTime, columnTypePercent);
 	}	
 	
 	// Create visualisation table	
@@ -491,10 +533,79 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 		firstColumnFix();
 		titleUpdate();
 		loadingStateOff();
+		
+		if (dataFeedQuery.method == "spark"){
+			console.log("sparky");
+			createSparkLines(data);
+		} 
 	}	
 	
-	//Shrink Page path text size
-	function firstColumnFix(){
-		$('tr > .table-size:nth-child(1)').addClass("width-cell");
-	}	
+	
+	
+	function createSparkLines(lineData) {
+  // To see the data that this visualization uses, browse to
+  // http://spreadsheets.google.com/ccc?key=pCQbetd-CptGXxxQIG7VFIQ  
+ 
+  $('#line_div').fadeIn(300);
+  
+		
+	//	ppArrayEntries = ppArray.length;
+	//	ppArraySorted = ppArray.sort();
+		console.log(lineData);
+		
+		var column = lineData.D.length;
+		var row = lineData.A.length;
+		
+		console.log(column);
+		console.log(row);
+		var lineDataView = new google.visualization.DataTable(lineData);
+		lineDataView.addColumn('number', 'Week');
+		lineDataView.addRows(row);
+
+		for (var i = 0; i < column; i++) {
+			singlePage = lineData.A[i];
+				console.log(singlePage);
+				lineDataView.addColumn('number', singlePage);
+		
+		}
+		
+		console.log(lineDataView);
+		days = column;
+		results = row;
+		for (var i = 0; i < days; i++) {
+			console.log(i * results);
+			date = lineData.getValue(i * results, 0);		
+			//console.log(date);
+			console.log(date + " & " + i);
+			lineDataView.setCell(i, 0, date);
+			offset = i * results;
+			console.log(offset);
+			
+			for (var id = 0; id < results; id++) {
+				views = lineData.getValue(offset + id, 2);
+				console.log(views + " & " + id);
+				console.log(i, id + 1, views);
+				lineDataView.setCell(i, id + 1, views);
+			
+			}
+
+		}
+
+		var options = {
+			width: 575,
+			height: 460,
+			backgroundColor: '#EEE',
+			chartArea: {left:20,top:20,width:"95%",height:"85%"},	
+			fontSize: 11,
+			legend: {position: 'bottom', textStyle: {color:'#888888'}},
+			vAxis: {title: "Views", textStyle: {color:'#888888'}, titleTextStyle: {color: 'black'}}, 	
+			hAxis: {title: "Date", textStyle: {color:'#888888'}, titleTextStyle: {color: 'black'}}			
+		};
+		
+		var lineDataViewAreaChart = new google.visualization.LineChart(document.getElementById('line_div'));
+        lineDataViewAreaChart.draw(lineDataView, options);
+        
+       // $('#line_div').show();
+		
+}
 		
