@@ -522,6 +522,25 @@ border-left: 1px solid #444;
 cursor: pointer;
 }
 
+
+div.line_div td {
+text-align: left;
+padding-right: 10px;
+vertical-align: middle;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*
  
 #inner-content td {

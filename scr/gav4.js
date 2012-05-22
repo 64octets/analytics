@@ -25,7 +25,7 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 			'access_token': config.accessToken,
 			'ids': config.tableId,
 			"start-date": "2009-04-01",
-			"end-date": "2009-04-05",
+			"end-date": "2009-06-05",
 			"dimensions": "ga:pagePath",
 			"metrics": "ga:pageviews,ga:uniquePageviews,ga:avgTimeOnPage,ga:bounces,ga:visitBounceRate",
 			"sort": "-ga:pageviews",
@@ -136,7 +136,7 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 
 	
 /**=========== 
-	UI INTERACTIONS 
+	UTILITY & UI FUNCTIONS 
 	=================*/
 	$(document).ready(function(){
 		
@@ -194,7 +194,7 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 			dataFeedQuery.params["start-index"] = current - pageSize;
 			$('#table-page-count').html(dataFeedQuery.params["start-index"] + " - " + (dataFeedQuery.params["start-index"] + 9 ) + " results");
 			getDataFeed(dataFeedQuery);
-			if (dataFeedQuery.startIndex < 10) {
+			if (dataFeedQuery.params["start-index"] < 10) {
 				$('#tab-prev').attr("disabled", true);
 			} 						
 		});
@@ -217,15 +217,15 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 					
 	// Form Submission Event
 	function formSubmitted() {
-		dataFeedQuery.startDate = $('#from-date').val();
-		dataFeedQuery.endDate = $('#to-date').val();
+		dataFeedQuery.params["start-date"] = $('#from-date').val();
+		dataFeedQuery.params["end-date"] = $('#to-date').val();
 		var filterValue = $('#frm-filter').val();
 		var filterOperator = $('.operator:checked').val();
 		var filterSpecific = $('.specific:checked').val();
 		//console.log(filterOperator);
 		//console.log(filterSpecific);
-		dataFeedQuery.filter = dataFeedQuery.dimensions + filterOperator + filterSpecific + filterValue;
-		//console.log(dataFeedQuery.filter);
+		dataFeedQuery.params["filters"] = dataFeedQuery.params["dimensions"] + filterOperator + filterSpecific + filterValue;
+		console.log(dataFeedQuery);
 		getDataFeed(dataFeedQuery);
 	} 	
 	
@@ -252,6 +252,31 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 	//Shrink Page path text size
 	function firstColumnFix(){
 		$('tr > .table-size:nth-child(1)').addClass("width-cell");
+	}
+	
+	//Format decimal time (28.0909678) into hh:mm:ss
+	function decimalTime(secs)
+	{
+	    var hours = Math.floor(secs / (60 * 60));
+	   
+	    var divisor_for_minutes = secs % (60 * 60);
+	    var minutes = Math.floor(divisor_for_minutes / 60);
+	 
+	    var divisor_for_seconds = divisor_for_minutes % 60;
+	    var seconds = Math.ceil(divisor_for_seconds);
+	   
+		var obj = [hours, minutes, seconds]
+		//console.log(obj);
+		//pad to format of hh:mm:ss
+		for (var i = 0; i < obj.length; i++){
+			if (obj[i] < 10 ) {
+				obj[i] = String("0" + obj[i]);
+			} 
+		}
+		obj = obj.join(":");
+		//console.log(obj);
+		return (obj);
+	   
 	}
 	
 /**======================
@@ -435,31 +460,6 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 				
 			}
 			
-			//Format decimal time (28.0909678) into hh:mm:ss
-			function decimalTime(secs)
-			{
-			    var hours = Math.floor(secs / (60 * 60));
-			   
-			    var divisor_for_minutes = secs % (60 * 60);
-			    var minutes = Math.floor(divisor_for_minutes / 60);
-			 
-			    var divisor_for_seconds = divisor_for_minutes % 60;
-			    var seconds = Math.ceil(divisor_for_seconds);
-			   
-				var obj = [hours, minutes, seconds]
-				//console.log(obj);
-				//pad to format of hh:mm:ss
-				for (var i = 0; i < obj.length; i++){
-					if (obj[i] < 10 ) {
-						obj[i] = String("0" + obj[i]);
-					} 
-				}
-				obj = obj.join(":");
-				//console.log(obj);
-				return (obj);
-			   
-			}
-			
 			// Add row data
 			var rowCount = response.rows.length;
 			for(var i = 0; i < rowCount; i++ ) {
@@ -535,7 +535,7 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 		loadingStateOff();
 		
 		if (dataFeedQuery.method == "spark"){
-			console.log("sparky");
+			//console.log("sparky");
 			createSparkLines(data);
 		} 
 	}	
@@ -550,11 +550,11 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
   
 		
 	//	ppArrayEntries = ppArray.length;
-	//	ppArraySorted = ppArray.sort();
+	/*	ppArraySorted = ppArray.sort();
 		console.log(lineData);
 		
-		var column = lineData.D.length;
-		var row = lineData.A.length;
+		var column = lineData.A.length;
+		var row = lineData.D.length;
 		
 		console.log(column);
 		console.log(row);
@@ -563,49 +563,57 @@ google.load('visualization', '1.0', {'packages':['corechart','table']});
 		lineDataView.addRows(row);
 
 		for (var i = 0; i < column; i++) {
-			singlePage = lineData.A[i];
-				console.log(singlePage);
+			singlePage = lineData.D[i];
+				//console.log(singlePage);
 				lineDataView.addColumn('number', singlePage);
 		
 		}
 		
-		console.log(lineDataView);
+		//console.log(lineDataView);
 		days = column;
 		results = row;
 		for (var i = 0; i < days; i++) {
-			console.log(i * results);
-			date = lineData.getValue(i * results, 0);		
+			//console.log(i * results);
+			date = lineData.getValue(i, 0);		
 			//console.log(date);
-			console.log(date + " & " + i);
+			//console.log(date + " & " + i);
 			lineDataView.setCell(i, 0, date);
-			offset = i * results;
-			console.log(offset);
+			offset = i;
+			//console.log(offset);
 			
 			for (var id = 0; id < results; id++) {
 				views = lineData.getValue(offset + id, 2);
-				console.log(views + " & " + id);
-				console.log(i, id + 1, views);
+				//console.log(views + " & " + id);
+				//console.log(i, id + 1, views);
 				lineDataView.setCell(i, id + 1, views);
 			
 			}
 
 		}
+*/
+var column = lineData.A.length;
+console.log(column);
+ var options = {
+    width: 240,
+    height: 40,
+    backgroundColor: '#D6CEC7',
+    colors: ['#2d241e'],
+    legend: 'none',
+    axisTitlesPosition: 'none',
+    vAxis: {baselineColor:'#D6CEC7', textPosition: 'none'},
+    hAxis: {baselineColor:'#D6CEC7', textPosition: 'none'},
+    enableInteractivity: 'false',
+    chartArea:{left:"5%",top:"10%",width:"90%",height:"90%"}
+    //tooltip: {trigger: 'none'}      
+  };
+ 
 
-		var options = {
-			width: 575,
-			height: 460,
-			backgroundColor: '#EEE',
-			chartArea: {left:20,top:20,width:"95%",height:"85%"},	
-			fontSize: 11,
-			legend: {position: 'bottom', textStyle: {color:'#888888'}},
-			vAxis: {title: "Views", textStyle: {color:'#888888'}, titleTextStyle: {color: 'black'}}, 	
-			hAxis: {title: "Date", textStyle: {color:'#888888'}, titleTextStyle: {color: 'black'}}			
-		};
-		
-		var lineDataViewAreaChart = new google.visualization.LineChart(document.getElementById('line_div'));
-        lineDataViewAreaChart.draw(lineDataView, options);
-        
-       // $('#line_div').show();
-		
+for(var i = 1; i < column; i++ ){
+	var dataView1 = new google.visualization.DataView(lineData);
+	dataView1.setColumns([0, i]);
+	var lineDataViewAreaChart = new google.visualization.LineChart(document.getElementById('line_div' + i));
+	lineDataViewAreaChart.draw(dataView1, options);
+}
+        $('.line_div').show();
 }
 		
